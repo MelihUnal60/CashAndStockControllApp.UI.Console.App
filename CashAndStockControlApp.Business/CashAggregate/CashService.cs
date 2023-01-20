@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.IO;
+using CashAndStockControlApp.Business.LogAggregate;
 
 namespace CashAndStockControlApp.Business.CashAggregate
 {
@@ -25,13 +26,14 @@ namespace CashAndStockControlApp.Business.CashAggregate
             try
             {
                 data = FileOperations.Read(Constants.KASA_DOSYA_YOLU);
-                list = JsonSerializer.Deserialize<List<Cash>>(data, new JsonSerializerOptions { IncludeFields = true});
+                list = JsonSerializer.Deserialize<List<Cash>>(data, new JsonSerializerOptions { IncludeFields = true });
             }
             catch (Data.txt.FileNotFoundException)
             {
 
                 var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { IncludeFields = true });
                 FileOperations.Save(Constants.KASA_DOSYA_YOLU, json);
+
             }
 
         }
@@ -43,6 +45,9 @@ namespace CashAndStockControlApp.Business.CashAggregate
                 CashLoad();
                 Cash k = new Cash(type,DateTime.Now,exp,price);
                 list.Add(k);
+                LogService.InfoLog("Ödeme kaydedildi");
+
+
 
                 string json = JsonSerializer.Serialize(list, new JsonSerializerOptions { IncludeFields = true});
                 FileOperations.Save(Constants.KASA_DOSYA_YOLU, json);
