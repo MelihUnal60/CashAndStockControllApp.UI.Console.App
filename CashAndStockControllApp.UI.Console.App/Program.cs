@@ -1,4 +1,5 @@
-﻿using CashAndStockControlApp.Business.CashAggregate;
+﻿using CashAndStockControlApp.Business;
+using CashAndStockControlApp.Business.CashAggregate;
 using CashAndStockControlApp.Business.LogAggregate;
 
 Cash c = new Cash(OperationType.Income, DateTime.Now,"ürün satışı" , 1500);
@@ -11,11 +12,12 @@ static void Menu()
     {
         while (true)
         {
-            var choose = TakeAnswer("1. Add İtem\n2. Sell İtem\n3. Cash Info\n4. Exit\n5. Error logs\n6.Warning logs\n7.Info logs", false);
+            var choose = TakeAnswer("1. Add İtem\n2. Sell İtem\n3. Cash Info\n4. Exit\n5. Error logs\n6.Warning logs\n7.Info logs\n8.Display all logs", false);
             switch (choose)
             {
                 case "0":
-                    throw new Exception("Bu değeri asla girme!");
+                    LogService.ErrorLog("0 geçerli bir değer değildir!!");
+                    break;
                 case "1":
                     AddItem();
                     break;
@@ -36,6 +38,9 @@ static void Menu()
                     break;
                 case "7":
                     LogService.ShowInfoLogList();
+                    break;
+                case "8":
+                    LogService.ShowAllLogList();
                     break;
 
                 default:
@@ -63,7 +68,16 @@ static void ReturnToMenu(string message = "Menüye dönmek için ENTER")
 
 static void CashInfo()
 {
-    
+    ApplicationService service = new ApplicationService();
+
+    var amount = service.CashAmount();
+    var list = service.CashList();
+    Console.WriteLine("Tarih \t\t\tTutar\t\tAçıklama");
+    foreach(var k in list)
+        Console.WriteLine($"{k._date.ToShortDateString()}\t\t{k._price}\t\t{k._exp}");
+
+    Console.WriteLine("Güncel Kasa Bakiyesi : " + amount);
+    ReturnToMenu();
 }
 
 static void SellItem()

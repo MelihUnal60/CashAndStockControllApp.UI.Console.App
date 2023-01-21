@@ -105,6 +105,14 @@ namespace CashAndStockControlApp.Business.LogAggregate
             }
 
         }
+        public static void ShowAllLogList()
+        {
+            foreach (Log log in logList)
+            {
+                Console.WriteLine(log);
+            }
+
+        }
 
     }
 
