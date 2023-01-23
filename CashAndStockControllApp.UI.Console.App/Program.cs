@@ -2,14 +2,13 @@
 using CashAndStockControlApp.Business.CashAggregate;
 using CashAndStockControlApp.Business.LogAggregate;
 
-Cash c = new Cash(OperationType.Income, DateTime.Now,"ürün satışı" , 1500);
+LogService.InfoLog("Program başlatıldı..");
 
 Menu();
 
 static void Menu()
 {
-    try
-    {
+    
         while (true)
         {
             var choose = TakeAnswer("1. Add İtem\n2. Sell İtem\n3. Cash Info\n4. Exit\n5. Error logs\n6.Warning logs\n7.Info logs\n8.Display all logs", false);
@@ -51,11 +50,8 @@ static void Menu()
                     break;
             }
         }
-    }
-    catch(Exception err)
-    {
-        LogService.ErrorLog("Hatalı tuşlama yaptınız!!");
-    }
+    
+    
     
 }
 
@@ -82,12 +78,43 @@ static void CashInfo()
 
 static void SellItem()
 {
+    ApplicationService service = new ApplicationService();
+    string itemName = TakeAnswer("Ürün adı : ");
     
+    ushort amount = Convert.ToUInt16(TakeAnswer("Adet : "));
+
+    GeneralAnswerType result = service.SellItem(itemName, amount);
+
+    if(result.IsFault)
+    {
+        Console.WriteLine(result.faultMessage);
+        TryAgain();
+        SellItem();
+        return;
+    }
+    ReturnToMenu();
 }
 
 static void AddItem()
 {
-    
+    Console.Clear();
+    string itemName = TakeAnswer("Ürün adı : ");
+    double buyPrice = Convert.ToDouble(TakeAnswer("Alış fiyatı : "));
+    double sellPrice = Convert.ToDouble(TakeAnswer("Satış fiyatı : "));
+    ushort itemAmount = Convert.ToUInt16(TakeAnswer("Stok adedi : "));
+
+    ApplicationService servis= new ApplicationService();
+    GeneralAnswerType result = servis.AddItem(itemName,buyPrice,sellPrice,itemAmount);
+
+    if(result.IsFault)
+    {
+        Console.WriteLine(result.faultMessage);
+        TryAgain();
+        AddItem();
+        return;
+    }
+    ReturnToMenu();
+
 }
 
 static string TakeAnswer(string screenText,bool sameRow = true)
@@ -97,4 +124,10 @@ static string TakeAnswer(string screenText,bool sameRow = true)
     else
         Console.WriteLine(screenText);
     return Console.ReadLine();
+}
+
+static void TryAgain()
+{
+    Console.WriteLine("Tekrar denemek için ENTER!");
+    Console.ReadLine();
 }

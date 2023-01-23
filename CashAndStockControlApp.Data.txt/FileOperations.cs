@@ -25,6 +25,7 @@ namespace CashAndStockControlApp.Data.txt
                 sb.Append($"********************************\r\n");
 
                 File.AppendAllText("log.txt",sb.ToString());
+                
                 throw new FileNotFoundException(fileRoad);
                 
             }
