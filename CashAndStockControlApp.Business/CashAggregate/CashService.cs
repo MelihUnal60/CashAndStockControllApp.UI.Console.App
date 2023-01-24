@@ -28,7 +28,7 @@ namespace CashAndStockControlApp.Business.CashAggregate
                 data = FileOperations.Read(Constants.KASA_DOSYA_YOLU);
                 list = JsonSerializer.Deserialize<List<Cash>>(data, new JsonSerializerOptions { IncludeFields = true });
             }
-            catch (Data.txt.FileNotFoundException)
+            catch (Exception)
             {
 
                 var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { IncludeFields = true });
